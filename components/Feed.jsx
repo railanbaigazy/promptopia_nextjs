@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import PromptCard from "@components/PromptCard";
+import PromptCard from "./PromptCard";
 
 const PromptCardList = ({data, handleTagClick}) => {
     return (
@@ -24,6 +24,16 @@ const Feed = () => {
     const [searchedPosts, setSearchedPosts] = useState([]);
     const [searchTimeout, setSearchTimeout] = useState(null);
 
+    const fetchPosts = async () => {
+        const response = await fetch('/api/prompt', {cache: 'no-store'});
+        const data = await response.json();
+        setPosts(data);
+    };
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
     const filterPrompts = (filterText) => {
         const regex = new RegExp(filterText, "i");
         return posts.filter(p => (
@@ -36,7 +46,8 @@ const Feed = () => {
         setSearchText(e.target.value);
         setSearchTimeout(
             setTimeout(() => {
-                setSearchedPosts(filterPrompts(e.target.value));
+                const searchResult = filterPrompts(e.target.value);
+                setSearchedPosts(searchResult);
             }, 500)
         );
 
@@ -45,18 +56,11 @@ const Feed = () => {
     const handleTagClick = (tagName) => {
         setSearchText(tagName);
 
-        setSearchedPosts(filterPrompts(tagName));
+        const searchResult = filterPrompts(tagName);
+
+        setSearchedPosts(searchResult);
     };
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            const response = await fetch('/api/prompt', {cache: 'no-store'});
-            const data = await response.json();
-            setPosts(data);
-        };
-
-        fetchPosts();
-    }, []);
     return (
         <section className="feed">
             <form name="search" className="relative w-full flex-center">
@@ -70,10 +74,14 @@ const Feed = () => {
                 />
             </form>
 
-            <PromptCardList
-                data={searchText ? searchedPosts : posts}
-                handleTagClick={handleTagClick}
-            />
+            {searchText ? (
+                <PromptCardList
+                    data={searchedPosts}
+                    handleTagClick={handleTagClick}
+                />
+            ) : (
+                <PromptCardList data={posts} handleTagClick={handleTagClick} />
+            )}
 
         </section>
     );
