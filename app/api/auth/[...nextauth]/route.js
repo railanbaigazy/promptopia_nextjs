@@ -31,7 +31,7 @@ const handler = NextAuth({
                     await User.create({
                         email: profile.email,
                         username: profile.name
-                            .replace(' ', '')
+                            .replace(" ", "")
                             .toLowerCase(),
                         image: profile.picture
                     });
@@ -39,11 +39,11 @@ const handler = NextAuth({
 
                 return true;
             } catch (e) {
-                console.error(e);
+                console.log("Error checking if user exists: ", e.message);
                 return false;
             }
         }
     }
 });
 
-export {handler as GET, handler as POST};
+export { handler as GET, handler as POST };

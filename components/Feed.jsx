@@ -25,7 +25,7 @@ const Feed = () => {
     const [searchTimeout, setSearchTimeout] = useState(null);
 
     const fetchPosts = async () => {
-        const response = await fetch('/api/prompt');
+        const response = await fetch("/api/prompt");
         const data = await response.json();
         console.log(data);
         setPosts(data);
@@ -33,6 +33,7 @@ const Feed = () => {
 
     useEffect(() => {
         fetchPosts();
+        console.log("effect used");
     }, []);
 
     const filterPrompts = (filterText) => {

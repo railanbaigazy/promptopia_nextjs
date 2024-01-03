@@ -1,4 +1,3 @@
-import {useIntersection} from "@node_modules/next/dist/client/use-intersection";
 import Feed from "@components/Feed";
 
 const Home = () => {
